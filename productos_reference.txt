@@ -1,0 +1,26 @@
+Cantidad de structs: 5
+
+[Struct 1]
+  cod_producto: 1
+  nbre_producto: Manzana
+  precio: 200
+
+[Struct 2]
+  cod_producto: 2
+  nbre_producto: Pera
+  precio: 150
+
+[Struct 3]
+  cod_producto: 3
+  nbre_producto: Jabon
+  precio: 300
+
+[Struct 4]
+  cod_producto: 4
+  nbre_producto: Bebida
+  precio: 800
+
+[Struct 5]
+  cod_producto: 5
+  nbre_producto: Pan
+  precio: 80
