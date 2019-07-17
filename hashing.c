@@ -28,7 +28,61 @@ int h(int k, int i){
     return i;
 }
 
-oferta *hashInitOferta();
+int hashInsertOferta(oferta HT[], int k, int cant_desc, int desc);
+int hashInsertProducto(producto HT[], int k, char nombre[31], int pre);
+
+producto *hashInitProducto(){
+    int i,M;
+    producto inProducto;
+
+    FILE *product;
+    product = fopen("productos.dat", "r");
+
+    fread(&M, sizeof(int),1,product);
+    
+    int  largeProduct = (int) ceil( ((double)10/(double)7)*M);
+    producto *HP = malloc(sizeof(producto)*largeProduct);
+
+    for (i = 0; i < M; i++){
+        HP[i].cod_producto=VACIA;
+    }
+
+    #define CANTPRODUCT largeProduct
+
+    for(i=0;i<largeProduct;i++){
+        fread(&inProducto, sizeof(producto), 1, product);
+        hashInsertProducto(HP, inProducto.cod_producto, inProducto.nbre_producto, inProducto.precio);
+    }
+
+    fclose(product);
+    return HP;
+}
+
+oferta *hashInitOferta(){
+    int i,M;
+    oferta inOferta;
+
+    FILE *ofert;
+    ofert = fopen("ofertas.dat", "r");
+
+    fread(&M, sizeof(int),1,ofert);
+    
+    int  largeOfert = (int) ceil( ((double)10/(double)7)*M);
+    #define CANT_OFERTA largeOfert
+    oferta *HO = malloc(sizeof(oferta)*largeOfert);
+
+    for (i = 0; i < M; i++){
+        HO[i].cod_producto=VACIA;
+    }
+
+    for(i=0;i<largeOfert;i++){
+        fread(&inOferta, sizeof(oferta), 1, ofert);
+        hashInsertOferta(HO,inOferta.cod_producto, inOferta.cantidad_descuento, inOferta.descuento);
+    }
+
+    fclose(ofert);
+    return HO;
+}
 
 int hashInsertOferta(oferta HT[], int k, int cant_desc, int desc) {
     int i;
@@ -46,14 +100,12 @@ int hashInsertOferta(oferta HT[], int k, int cant_desc, int desc) {
         }
 }
 
-producto *hashInitProducto();
-
 int hashInsertProducto(producto HT[], int k, char nombre[31], int pre) {
     int i;
     int pos = h(k,0);
     int inicio = pos;
     for (i = 1; HT[pos].cod_producto != VACIA && HT[pos].cod_producto != k; i++)
-        pos = (inicio + h(k, i)) % CANT_PRODUCTO;
+        pos = (inicio + h(k, i)) % CANTPRODUCT;
         if (HT[pos].cod_producto == k){
             return 0;
         }else{
@@ -114,58 +166,6 @@ void hashDisplayProducto(producto HT[], int M){
          printf(" ~~ ");
    }
    printf("\n");
-}
-
-producto *hashInitProducto(){
-    int i,M;
-    producto inProducto;
-
-    FILE *product;
-    product = fopen("productos.dat", "r");
-
-    fread(&M, sizeof(int),1,product);
-    
-    int  largeProduct = (int) ceil( ((double)10/(double)7)*M);
-    #define CANT_PRODUCTO largeProduct
-    producto *HP = malloc(sizeof(producto)*largeProduct);
-
-    for (i = 0; i < M; i++){
-        HP[i].cod_producto=VACIA;
-    }
-
-    for(i=0;i<largeProduct;i++){
-        fread(&inProducto, sizeof(producto), 1, product);
-        hashInsertProducto(HP, inProducto.cod_producto, inProducto.nbre_producto, inProducto.precio);
-    }
-
-    fclose(product);
-    return HP;
-}
-
-oferta *hashInitOferta(){
-    int i,M;
-    oferta inOferta;
-
-    FILE *ofert;
-    ofert = fopen("ofertas.dat", "r");
-
-    fread(&M, sizeof(int),1,ofert);
-    
-    int  largeOfert = (int) ceil( ((double)10/(double)7)*M);
-    #define CANT_OFERTA largeOfert
-    oferta *HO = malloc(sizeof(oferta)*largeOfert);
-
-    for (i = 0; i < M; i++){
-        HO[i].cod_producto=VACIA;
-    }
-
-    for(i=0;i<largeOfert;i++){
-        fread(&inOferta, sizeof(oferta), 1, ofert);
-        hashInsertOferta(HO,inOferta.cod_producto, inOferta.cantidad_descuento, inOferta.descuento);
-    }
-
-    fclose(ofert);
-    return HO;
 }
 
 int main(){
