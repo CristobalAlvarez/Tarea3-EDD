@@ -28,35 +28,39 @@ int h(int k, int i){
     return i;
 }
 
-int hashInsertOferta(oferta HT[], int k, int cant_desc, int desc,int M) {
+oferta *hashInitOferta();
+
+int hashInsertOferta(oferta HT[], int k, int cant_desc, int desc) {
     int i;
     int pos = h(k,0);
     int inicio = pos;
     for (i = 1; HT[pos].cod_producto != VACIA && HT[pos].cod_producto != k; i++)
-        pos = (inicio + h(k, i)) % M; // próxima ranura en la secuencia
+        pos = (inicio + h(k, i)) % CANT_OFERTA;
         if (HT[pos].cod_producto == k){
-            return 0; // inserción no exitosa: cod_producto repetida
+            return 0;
         }else{
             HT[pos].cod_producto = k;
             HT[pos].cantidad_descuento = cant_desc;
             HT[pos].descuento = desc;
-            return 1; // inserción exitosa
+            return 1;
         }
 }
 
-int hashInsertProducto(producto HT[], int k, char nombre[31], int pre, int M) {
+producto *hashInitProducto();
+
+int hashInsertProducto(producto HT[], int k, char nombre[31], int pre) {
     int i;
     int pos = h(k,0);
     int inicio = pos;
     for (i = 1; HT[pos].cod_producto != VACIA && HT[pos].cod_producto != k; i++)
-        pos = (inicio + h(k, i)) % M; // próxima ranura en la secuencia
+        pos = (inicio + h(k, i)) % CANT_PRODUCTO;
         if (HT[pos].cod_producto == k){
-            return 0; // inserción no exitosa: cod_producto repetida
+            return 0;
         }else{
             HT[pos].cod_producto = k;
             HT[pos].precio = pre;
             strcpy(HT[pos].nbre_producto,nombre);
-            return 1; // inserción exitosa
+            return 1;
         }
 }
 
@@ -122,6 +126,7 @@ producto *hashInitProducto(){
     fread(&M, sizeof(int),1,product);
     
     int  largeProduct = (int) ceil( ((double)10/(double)7)*M);
+    #define CANT_PRODUCTO largeProduct
     producto *HP = malloc(sizeof(producto)*largeProduct);
 
     for (i = 0; i < M; i++){
@@ -130,7 +135,7 @@ producto *hashInitProducto(){
 
     for(i=0;i<largeProduct;i++){
         fread(&inProducto, sizeof(producto), 1, product);
-        hashInsertProducto(HP, inProducto.cod_producto, inProducto.nbre_producto, inProducto.precio,largeProduct);
+        hashInsertProducto(HP, inProducto.cod_producto, inProducto.nbre_producto, inProducto.precio);
     }
 
     fclose(product);
@@ -147,6 +152,7 @@ oferta *hashInitOferta(){
     fread(&M, sizeof(int),1,ofert);
     
     int  largeOfert = (int) ceil( ((double)10/(double)7)*M);
+    #define CANT_OFERTA largeOfert
     oferta *HO = malloc(sizeof(oferta)*largeOfert);
 
     for (i = 0; i < M; i++){
@@ -155,7 +161,7 @@ oferta *hashInitOferta(){
 
     for(i=0;i<largeOfert;i++){
         fread(&inOferta, sizeof(oferta), 1, ofert);
-        hashInsertOferta(HO,inOferta.cod_producto, inOferta.cantidad_descuento, inOferta.descuento,largeOfert);
+        hashInsertOferta(HO,inOferta.cod_producto, inOferta.cantidad_descuento, inOferta.descuento);
     }
 
     fclose(ofert);
