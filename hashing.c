@@ -5,6 +5,8 @@
 #include <math.h>
 
 #define VACIA -1
+int CANT_OFERTA;
+int CANT_PRODUCTO;
 
 typedef struct {
     int cod_producto;
@@ -43,11 +45,11 @@ producto *hashInitProducto(){
     int  largeProduct = (int) ceil( ((double)10/(double)7)*M);
     producto *HP = malloc(sizeof(producto)*largeProduct);
 
-    for (i = 0; i < M; i++){
+    for (i = 0; i < largeProduct; i++){
         HP[i].cod_producto=VACIA;
     }
 
-    #define CANTPRODUCT largeProduct
+    CANT_PRODUCTO = largeProduct;
 
     for(i=0;i<largeProduct;i++){
         fread(&inProducto, sizeof(producto), 1, product);
@@ -68,10 +70,10 @@ oferta *hashInitOferta(){
     fread(&M, sizeof(int),1,ofert);
     
     int  largeOfert = (int) ceil( ((double)10/(double)7)*M);
-    #define CANT_OFERTA largeOfert
+    CANT_OFERTA = largeOfert;
     oferta *HO = malloc(sizeof(oferta)*largeOfert);
 
-    for (i = 0; i < M; i++){
+    for (i = 0; i < largeOfert; i++){
         HO[i].cod_producto=VACIA;
     }
 
@@ -105,7 +107,7 @@ int hashInsertProducto(producto HT[], int k, char nombre[31], int pre) {
     int pos = h(k,0);
     int inicio = pos;
     for (i = 1; HT[pos].cod_producto != VACIA && HT[pos].cod_producto != k; i++)
-        pos = (inicio + h(k, i)) % CANTPRODUCT;
+        pos = (inicio + h(k, i)) % CANT_PRODUCTO;
         if (HT[pos].cod_producto == k){
             return 0;
         }else{
@@ -116,13 +118,13 @@ int hashInsertProducto(producto HT[], int k, char nombre[31], int pre) {
         }
 }
 
-producto searchProducto(producto HP[],int k, int M){
+producto searchProducto(producto HP[],int k){
     int inicio, i;
     int pos = h(k,0);
     inicio=pos;
     producto output;
     for (i = 1; HP[pos].cod_producto != VACIA && HP[pos].cod_producto != k; i++){
-        pos = (inicio + h(k, i)) % M; // próxima ranura en la secuencia
+        pos = (inicio + h(k, i)) % CANT_PRODUCTO; // próxima ranura en la secuencia
         if (HP[pos].cod_producto == k){
             output = HP[pos]; // registro encontrado, búsqueda exitosa
         }
@@ -131,13 +133,13 @@ producto searchProducto(producto HP[],int k, int M){
     return output;
 }
 
-oferta searchOferta(oferta HP[],int k, int M){
+oferta searchOferta(oferta HP[],int k){
     int inicio, i;
     int pos = h(k,0);
     inicio=pos;
     oferta output;
     for (i = 1; HP[pos].cod_producto != VACIA && HP[pos].cod_producto != k; i++){
-        pos = (inicio + h(k, i)) % M; // próxima ranura en la secuencia
+        pos = (inicio + h(k, i)) % CANT_OFERTA; // próxima ranura en la secuencia
         if (HP[pos].cod_producto == k){
             output = HP[pos]; // registro encontrado, búsqueda exitosa
         }
@@ -146,9 +148,9 @@ oferta searchOferta(oferta HP[],int k, int M){
     return output;
 }
 
-void hashDisplayOferta(oferta HT[], int M){
+void hashDisplayOferta(oferta HT[]){
    int i = 0;
-   for(i = 0; i<M; i++) {
+   for(i = 0; i<CANT_OFERTA; i++) {
       if(HT[i].cod_producto != VACIA)
          printf(" (%d,%d)",HT[i].cod_producto,HT[i].descuento);
       else
@@ -157,9 +159,9 @@ void hashDisplayOferta(oferta HT[], int M){
    printf("\n");
 }
 
-void hashDisplayProducto(producto HT[], int M){
+void hashDisplayProducto(producto HT[]){
    int i = 0;
-   for(i = 0; i<M; i++) {
+   for(i = 0; i<CANT_PRODUCTO; i++) {
       if(HT[i].cod_producto != VACIA)
          printf(" (%d,%s)",HT[i].cod_producto,HT[i].nbre_producto);
       else
@@ -174,6 +176,8 @@ int main(){
 
     oferta *inputOfertas = hashInitOferta();
     producto *inputProductos = hashInitProducto();
+
+    hashDisplayOferta(inputOfertas);
 
     /* 
     input = fopen("compras.txt","r");
