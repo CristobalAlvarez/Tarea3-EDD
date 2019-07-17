@@ -171,15 +171,13 @@ void hashDisplayProducto(producto HT[]){
 }
 
 int main(){
-    int ofertCant,i;
+    int ofertCant,i,j;
     char buffer[100];
 
     oferta *inputOfertas = hashInitOferta();
     producto *inputProductos = hashInitProducto();
 
-    hashDisplayOferta(inputOfertas);
-
-    /* 
+    FILE *input;
     input = fopen("compras.txt","r");
     fgets(buffer,100,input);
     strtok(buffer, "\n");
@@ -190,9 +188,9 @@ int main(){
         strtok(buffer, "\n");
         int compras = atoi(buffer);
         for(j=0;j<compras;j++){
-
+            fgets(buffer,100,input);
+            printf("%s",buffer);
         }
     }
-    */
     
 }
