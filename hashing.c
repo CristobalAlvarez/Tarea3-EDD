@@ -20,10 +20,63 @@ typedef struct {
     int descuento;
 }oferta;
 
+/*--------------------------------- */
+struct nodo {
+   int cantidad;
+   int numero;
+   struct nodo *sig;
+};
+
+struct nodo *cabeza = NULL;
+
+struct nodo* find(int numero);
+
+void insert(int numero){
+	if(find(numero)==NULL){	
+		struct nodo *aux = (struct nodo*) malloc(sizeof(struct nodo));
+   	    aux->numero = numero;
+   	    aux->cantidad = 1;
+   	    aux->sig = cabeza;
+   	    cabeza = aux;
+	}else{
+		find(numero)->cantidad++;
+	}
+}
+
+struct nodo* find(int numero) {
+   struct nodo* actual = cabeza;
+   if(cabeza == NULL){
+      return NULL;
+   }
+   while(actual->numero != numero){
+      if(actual->sig == NULL){
+         return NULL;
+      }else{
+         actual = actual->sig;
+      }
+   }      
+   return actual;
+}
+
+void printList(){
+    struct nodo *aux = cabeza;
+    printf("\n");
+    while(aux!=NULL){
+        printf("[%d,%d]",aux->numero,aux->cantidad);
+    }
+    printf("\n");
+}
+
+void deleteList(){
+   while(cabeza!=NULL){
+      struct nodo *aux = cabeza;
+      cabeza=cabeza->sig;
+      free(aux);
+   }
+}
+/*--------------------------------- */
 int h2(int k){
-    srand(time(NULL));
-    int r = rand();
-    return k*r;
+    return k%7;
 }
 
 int h(int k, int i){
@@ -68,7 +121,7 @@ oferta *hashInitOferta(){
     ofert = fopen("ofertas.dat", "r");
 
     fread(&M, sizeof(int),1,ofert);
-    
+
     int  largeOfert = (int) ceil( ((double)10/(double)7)*M);
     CANT_OFERTA = largeOfert;
     oferta *HO = malloc(sizeof(oferta)*largeOfert);
@@ -109,8 +162,9 @@ int hashInsertProducto(producto HT[], int k, char nombre[31], int pre) {
     int i;
     int pos = h(k,0);
     int inicio = pos;
-    for (i = 1; HT[pos].cod_producto != VACIA && HT[pos].cod_producto != k; i++)
+    for (i = 1; HT[pos].cod_producto != VACIA && HT[pos].cod_producto != k; i++){
         pos = (inicio + h(k, i)) % CANT_PRODUCTO;
+    }
 
     if (HT[pos].cod_producto == k){
         return 0;
@@ -128,9 +182,8 @@ producto searchProducto(producto HP[],int k){
     inicio=pos;
 
     producto output;
-    output.cod_producto = 0;
+    output.cod_producto=VACIA;
     output.precio = 0;
-    strcpy(output.nbre_producto,"nada");
 
     for (i = 1; HP[pos].cod_producto != VACIA && HP[pos].cod_producto != k; i++){
         pos = (inicio + h(k, i)) % CANT_PRODUCTO;
@@ -149,22 +202,20 @@ oferta searchOferta(oferta HP[],int k){
     inicio=pos;
 
     oferta output;
-    output.cod_producto = 0;
+    output.cod_producto=VACIA;
     output.cantidad_descuento = 0;
     output.descuento = 0;
 
-    for(i = 1; HP[pos].cod_producto != VACIA && HP[pos].cod_producto != k; i++){
-        pos = (inicio + h(k, i)) % CANT_OFERTA; // próxima ranura en la secuencia
+    for (i = 1; HP[pos].cod_producto != VACIA && HP[pos].cod_producto != k; i++){
+        pos = (inicio + h(k, i)) % CANT_PRODUCTO;
     }
-
-    if(HP[pos].cod_producto == k){
-            output = HP[pos];
-            return output;
+    
+    if (HP[pos].cod_producto == k){
+        output = HP[pos];
     }
 
     return output;
 }
-
 
 void hashDisplayOferta(oferta HT[]){
    int i = 0;
@@ -188,30 +239,15 @@ void hashDisplayProducto(producto HT[]){
    printf("\n");
 }
 
-int doDescuento(oferta HT[], int k){
-    int i;
-    int pos = h(k,0);
-    int re=0;
-    int inicio=pos;
-    for(i = 1; HT[pos].cod_producto != VACIA && HT[pos].cod_producto != k; i++){
-        pos = (inicio + h(k, i)) % CANT_OFERTA;
-    }
-        
-    if(HT[pos].cod_producto == k && HT[pos].cantidad_descuento > 0){
-        (&HT)[pos]->cantidad_descuento--;
-        re = HT[pos].descuento;
-    }
-    return re;
-
-}
 
 int main(){
     int i,j;
     char buffer[100];
-
+    
     oferta *inputOfertas = hashInitOferta();
     producto *inputProductos = hashInitProducto();
 
+     
     FILE *input;
     input = fopen("compras.txt","r");
 
@@ -221,21 +257,38 @@ int main(){
     printf("%s\n",buffer);
 
     for(i=0;i<cantCompras;i++){
+
         int total = 0;
         fgets(buffer,100,input);
         strtok(buffer, "\n");
         int compras = atoi(buffer);
+
         for(j=0;j<compras;j++){
             fgets(buffer,100,input);
+            strtok(buffer,"\n");
             int id = atoi(buffer);
-            //printf("Producto comprado:%s. Codigo:%s\n",searchProducto(inputProductos,atoi(buffer)).nbre_producto,buffer);
-            total = total + searchProducto(inputProductos,id).precio - doDescuento(inputOfertas,id);
+            insert(id);          
+        } 
+
+        while(cabeza!=NULL){
+            producto actualProducto = searchProducto(inputProductos,cabeza->numero);
+            oferta actualOferta = searchOferta(inputOfertas,cabeza->numero);
+
+            if(actualOferta.cod_producto==VACIA){
+                total = total + cabeza->cantidad*actualProducto.precio;
+            }else{
+                total = total + ((cabeza->cantidad)/(actualOferta.cantidad_descuento))*(actualProducto.precio - actualOferta.descuento) + ((cabeza->cantidad)%(actualOferta.cantidad_descuento))*(actualProducto.precio);
+            }
+            cabeza=cabeza->sig;
         }
+
         printf("%d\n",total);
+        deleteList();
     }
 
+    
     free(inputOfertas);
     free(inputProductos);
     fclose(input);
-
+    
 }

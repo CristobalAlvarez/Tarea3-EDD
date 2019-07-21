@@ -1,13 +1,28 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-
-void prueba(int HT[]){
-    HT[0]=5;
-}
+#include <string.h>
 
 int main(){
-    int ar[5];
-    prueba(ar);
-    printf("%d",ar[0]);
+    FILE *input;
+    int i,j,compras;
+    char buffer[100];
+    input = fopen("compras.txt","r");
+
+    fgets(buffer,100,input);
+    strtok(buffer, "\n");
+    int cantCompras = atoi(buffer);
+    printf("%s\n",buffer);
+
+    for(i=0;i<cantCompras;i++){
+        fgets(buffer,100,input);
+        printf("%s",buffer);
+        strtok(buffer, "\n");
+        int compras = atoi(buffer);
+        for(j=0;j<compras;j++){
+            fgets(buffer,100,input);
+            printf("%s",buffer);
+            strtok(buffer,"\n");
+        }
+    }
+    fclose(input);
 }

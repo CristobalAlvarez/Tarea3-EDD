@@ -1,4 +1,4 @@
-Cantidad de structs: 2
+Cantidad de structs: 5
 
 [Struct 1]
   cod_producto: 4
@@ -9,3 +9,18 @@ Cantidad de structs: 2
   cod_producto: 5
   cantidad_descuento: 6
   descuento: 160
+
+[Struct 3]
+  cod_producto: 6
+  cantidad_descuento: 2
+  descuento: 200
+
+[Struct 4]
+  cod_producto: 2
+  cantidad_descuento: 2
+  descuento: 100
+
+[Struct 5]
+  cod_producto: 15
+  cantidad_descuento: 3
+  descuento: 200
