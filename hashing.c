@@ -4,23 +4,8 @@
 #include <time.h>
 #include <math.h>
 
-#define VACIA -1
-int CANT_OFERTA;
-int CANT_PRODUCTO;
-
-typedef struct {
-    int cod_producto;
-    char nbre_producto[31];
-    int precio;
-}producto;
-
-typedef struct {
-    int cod_producto;
-    int cantidad_descuento;
-    int descuento;
-}oferta;
-
 /*--------------------------------- */
+
 struct nodo {
    int cantidad;
    int numero;
@@ -74,7 +59,25 @@ void deleteList(){
       free(aux);
    }
 }
+
 /*--------------------------------- */
+
+#define VACIA -1
+int CANT_OFERTA;
+int CANT_PRODUCTO;
+
+typedef struct {
+    int cod_producto;
+    char nbre_producto[31];
+    int precio;
+}producto;
+
+typedef struct {
+    int cod_producto;
+    int cantidad_descuento;
+    int descuento;
+}oferta;
+
 int h2(int k){
     return k%7;
 }
@@ -239,7 +242,6 @@ void hashDisplayProducto(producto HT[]){
    printf("\n");
 }
 
-
 int main(){
     int i,j;
     char buffer[100];
@@ -286,7 +288,6 @@ int main(){
         deleteList();
     }
 
-    
     free(inputOfertas);
     free(inputProductos);
     fclose(input);
