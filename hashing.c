@@ -79,11 +79,11 @@ typedef struct {
 }oferta;
 
 int h2(int k){
-    return k%7;
+    return k*7;
 }
 
 int h(int k, int i){
-    return i;
+    return  k;
 }
 
 int hashInsertOferta(oferta HT[], int k, int cant_desc, int desc);
@@ -165,6 +165,7 @@ int hashInsertProducto(producto HT[], int k, char nombre[31], int pre) {
     int i;
     int pos = h(k,0);
     int inicio = pos;
+
     for (i = 1; HT[pos].cod_producto != VACIA && HT[pos].cod_producto != k; i++){
         pos = (inicio + h(k, i)) % CANT_PRODUCTO;
     }
@@ -246,9 +247,13 @@ int main(){
     int i,j;
     char buffer[100];
     
+    printf("Aqui");
+
     oferta *inputOfertas = hashInitOferta();
+    printf("Aqui");
     producto *inputProductos = hashInitProducto();
 
+    printf("Aqui");
      
     FILE *input;
     input = fopen("compras.txt","r");
@@ -257,6 +262,8 @@ int main(){
     strtok(buffer, "\n");
     int cantCompras = atoi(buffer);
     printf("%s\n",buffer);
+
+    printf("Aqui");
 
     for(i=0;i<cantCompras;i++){
 
@@ -271,6 +278,8 @@ int main(){
             int id = atoi(buffer);
             insert(id);          
         } 
+
+        printf("Aqui");
 
         while(cabeza!=NULL){
             producto actualProducto = searchProducto(inputProductos,cabeza->numero);
