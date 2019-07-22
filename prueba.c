@@ -1,17 +1,28 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 int main(){
-    char buffer[100];
-
     FILE *input;
+    int i,j,compras;
+    char buffer[100];
     input = fopen("compras.txt","r");
-    while(feof(input)==0){
+
+    fgets(buffer,100,input);
+    strtok(buffer, "\n");
+    int cantCompras = atoi(buffer);
+    printf("%s\n",buffer);
+
+    for(i=0;i<cantCompras;i++){
         fgets(buffer,100,input);
+        printf("%s",buffer);
         strtok(buffer, "\n");
-        int p = atoi(buffer);
-        printf("%d\n",p);
+        int compras = atoi(buffer);
+        for(j=0;j<compras;j++){
+            fgets(buffer,100,input);
+            printf("%s",buffer);
+            strtok(buffer,"\n");
+        }
     }
-    return 0;
+    fclose(input);
 }

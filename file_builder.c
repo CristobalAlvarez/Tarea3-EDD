@@ -14,7 +14,7 @@ int codP[] = {1, 2, 3, 4, 5};  // Codigos de los productos
 char *nbreP[] = {"Manzana", "Pera", "Jabon", "Bebida", "Pan"};  // Nombres de los productos
 int precioP[] = {200, 150, 300, 800, 80};  // Precios de los productos
 
-int numO = 3;  // Cantidad de ofertas
+int numO = 2;  // Cantidad de ofertas
 int codO[] = {4, 5};  // Codigos de los productos en oferta
 int cantidadO[] = {3, 6};  // Cantidad de productos por oferta
 int descuentoO[] = {800, 160};  // Descuentos
