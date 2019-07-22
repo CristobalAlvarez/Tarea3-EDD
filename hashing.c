@@ -246,14 +246,10 @@ void hashDisplayProducto(producto HT[]){
 int main(){
     int i,j;
     char buffer[100];
-    
-    printf("Aqui");
 
     oferta *inputOfertas = hashInitOferta();
-    printf("Aqui");
     producto *inputProductos = hashInitProducto();
 
-    printf("Aqui");
      
     FILE *input;
     input = fopen("compras.txt","r");
@@ -263,7 +259,6 @@ int main(){
     int cantCompras = atoi(buffer);
     printf("%s\n",buffer);
 
-    printf("Aqui");
 
     for(i=0;i<cantCompras;i++){
 
@@ -278,8 +273,6 @@ int main(){
             int id = atoi(buffer);
             insert(id);          
         } 
-
-        printf("Aqui");
 
         while(cabeza!=NULL){
             producto actualProducto = searchProducto(inputProductos,cabeza->numero);
