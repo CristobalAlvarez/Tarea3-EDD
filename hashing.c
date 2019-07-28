@@ -74,7 +74,7 @@ int h2(int k){
 }
 
 int h(int k, int i){
-    return  i*h2(k);
+    return  i*i*h2(k);
 }
 
 int hashInsertOferta(oferta HT[], int k, int cant_desc, int desc);
@@ -173,7 +173,7 @@ int hashInsertProducto(producto HT[], int k, char nombre[31], int pre) {
 
 producto searchProducto(producto HP[],int k){
     int inicio, i;
-    int pos = h(k,0);
+    int pos = h(k,0)%CANT_PRODUCTO;
     inicio=pos;
 
     producto output;
@@ -195,7 +195,7 @@ producto searchProducto(producto HP[],int k){
 
 oferta searchOferta(oferta HP[],int k){
     int inicio, i;
-    int pos = h(k,0);
+    int pos = h(k,0)%CANT_OFERTA;
     inicio=pos;
 
     oferta output;
@@ -271,7 +271,6 @@ int main(){
             insert(id);          
         }
 
-        
         while(cabeza!=NULL){
             producto actualProducto = searchProducto(inputProductos,cabeza->numero);
             oferta actualOferta = searchOferta(inputOfertas,cabeza->numero);
