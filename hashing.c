@@ -43,15 +43,6 @@ struct nodo* find(int numero) {
    return actual;
 }
 
-void printList(){
-    struct nodo *aux = cabeza;
-    printf("\n");
-    while(aux!=NULL){
-        printf("[%d,%d]",aux->numero,aux->cantidad);
-    }
-    printf("\n");
-}
-
 void deleteList(){
    while(cabeza!=NULL){
       struct nodo *aux = cabeza;
@@ -79,11 +70,11 @@ typedef struct {
 }oferta;
 
 int h2(int k){
-    return k*7;
+    return k%7;
 }
 
 int h(int k, int i){
-    return  k;
+    return  i*h2(k);
 }
 
 int hashInsertOferta(oferta HT[], int k, int cant_desc, int desc);
@@ -98,7 +89,7 @@ producto *hashInitProducto(){
 
     fread(&M, sizeof(int),1,product);
     
-    int  largeProduct = (int) ceil( ((double)10/(double)7)*M);
+    int  largeProduct = (int) floor( ((double)10/(double)7)*M);
     producto *HP = malloc(sizeof(producto)*largeProduct);
 
     for (i = 0; i < largeProduct; i++){
@@ -125,7 +116,7 @@ oferta *hashInitOferta(){
 
     fread(&M, sizeof(int),1,ofert);
 
-    int  largeOfert = (int) ceil( ((double)10/(double)7)*M);
+    int  largeOfert = (int) floor( ((double)10/(double)7)*M);
     CANT_OFERTA = largeOfert;
     oferta *HO = malloc(sizeof(oferta)*largeOfert);
 
@@ -147,11 +138,11 @@ int hashInsertOferta(oferta HT[], int k, int cant_desc, int desc) {
     int pos = h(k,0);
     int inicio = pos;
 
-    for (i = 1; HT[pos].cod_producto != VACIA && HT[pos].cod_producto != k; i++){
+    for(i=1;HT[pos].cod_producto != VACIA && HT[pos].cod_producto != k;i++){
         pos = (inicio + h(k, i)) % CANT_OFERTA;
     }
 
-    if (HT[pos].cod_producto == k){
+    if(HT[pos].cod_producto==k){
         return 0;
     }else{
         HT[pos].cod_producto = k;
@@ -191,6 +182,8 @@ producto searchProducto(producto HP[],int k){
 
     for (i = 1; HP[pos].cod_producto != VACIA && HP[pos].cod_producto != k; i++){
         pos = (inicio + h(k, i)) % CANT_PRODUCTO;
+        if(i==2*CANT_PRODUCTO)
+            break;
     }
     
     if (HP[pos].cod_producto == k){
@@ -211,10 +204,12 @@ oferta searchOferta(oferta HP[],int k){
     output.descuento = 0;
 
     for (i = 1; HP[pos].cod_producto != VACIA && HP[pos].cod_producto != k; i++){
-        pos = (inicio + h(k, i)) % CANT_PRODUCTO;
+        pos = (inicio + h(k, i)) % CANT_OFERTA;
+        if(i==2*CANT_OFERTA)
+            break;
     }
     
-    if (HP[pos].cod_producto == k){
+    if(HP[pos].cod_producto == k){
         output = HP[pos];
     }
 
@@ -229,7 +224,7 @@ void hashDisplayOferta(oferta HT[]){
       else
          printf(" ~~ ");
    }
-   printf("\n");
+   printf("\n\n");
 }
 
 void hashDisplayProducto(producto HT[]){
@@ -250,7 +245,9 @@ int main(){
     oferta *inputOfertas = hashInitOferta();
     producto *inputProductos = hashInitProducto();
 
-     
+    hashDisplayOferta(inputOfertas);
+    hashDisplayProducto(inputProductos);
+
     FILE *input;
     input = fopen("compras.txt","r");
 
@@ -272,24 +269,27 @@ int main(){
             strtok(buffer,"\n");
             int id = atoi(buffer);
             insert(id);          
-        } 
+        }
 
+        
         while(cabeza!=NULL){
             producto actualProducto = searchProducto(inputProductos,cabeza->numero);
             oferta actualOferta = searchOferta(inputOfertas,cabeza->numero);
-
-            if(actualOferta.cod_producto==VACIA){
-                total = total + cabeza->cantidad*actualProducto.precio;
-            }else{
-                total = total + ((cabeza->cantidad)/(actualOferta.cantidad_descuento))*(actualProducto.precio - actualOferta.descuento) + ((cabeza->cantidad)%(actualOferta.cantidad_descuento))*(actualProducto.precio);
+            if(actualProducto.cod_producto!=VACIA){
+                if(actualOferta.cod_producto==VACIA){
+                    total = total + cabeza->cantidad*actualProducto.precio;
+                }else{
+                    total = total + ((cabeza->cantidad)/(actualOferta.cantidad_descuento))*(actualProducto.precio - actualOferta.descuento) + ((cabeza->cantidad)%(actualOferta.cantidad_descuento))*(actualProducto.precio);
+                }
             }
             cabeza=cabeza->sig;
         }
-
+        
         printf("%d\n",total);
         deleteList();
     }
 
+    
     free(inputOfertas);
     free(inputProductos);
     fclose(input);
