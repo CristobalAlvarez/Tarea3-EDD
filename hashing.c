@@ -98,7 +98,7 @@ producto *hashInitProducto(){
 
     CANT_PRODUCTO = largeProduct;
 
-    for(i=0;i<largeProduct;i++){
+    for(i=0;i<M;i++){
         fread(&inProducto, sizeof(producto), 1, product);
         hashInsertProducto(HP, inProducto.cod_producto, inProducto.nbre_producto, inProducto.precio);
     }
@@ -124,7 +124,7 @@ oferta *hashInitOferta(){
         HO[i].cod_producto=VACIA;
     }
 
-    for(i=0;i<largeOfert;i++){
+    for(i=0;i<M;i++){
         fread(&inOferta, sizeof(oferta), 1, ofert);
         hashInsertOferta(HO,inOferta.cod_producto, inOferta.cantidad_descuento, inOferta.descuento);
     }
