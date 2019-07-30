@@ -182,8 +182,6 @@ producto searchProducto(producto HP[],int k){
 
     for (i = 1; HP[pos].cod_producto != VACIA && HP[pos].cod_producto != k; i++){
         pos = (inicio + i*h2(k, 0)) % CANT_PRODUCTO;
-        if(i==4*CANT_PRODUCTO)
-            break;
     }
     
     if (HP[pos].cod_producto == k){
@@ -205,8 +203,6 @@ oferta searchOferta(oferta HP[],int k){
 
     for (i = 1; HP[pos].cod_producto != VACIA && HP[pos].cod_producto != k; i++){
         pos = (inicio + i*h2(k,1)) % CANT_OFERTA;
-        if(i==2*CANT_OFERTA)
-            break;
     }
     
     if(HP[pos].cod_producto == k){
@@ -244,7 +240,6 @@ int main(){
 
     oferta *inputOfertas = hashInitOferta(); 
     producto *inputProductos = hashInitProducto();
-    hashDisplayProducto(inputProductos);
 
     FILE *input,*output;
     input = fopen("compras.txt","r");
