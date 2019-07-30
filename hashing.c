@@ -69,12 +69,12 @@ typedef struct {
     int descuento;
 }oferta;
 
-int h2(int k){
-    return k%7;
+int h2(int k, int i, int pos){
+    return i*(7-k%7);
 }
 
-int h(int k, int i){
-    return  i*i*h2(k);
+int h(int k, int i,int pos){
+    return k;
 }
 
 int hashInsertOferta(oferta HT[], int k, int cant_desc, int desc);
@@ -91,12 +91,12 @@ producto *hashInitProducto(){
     
     int  largeProduct = (int) floor( ((double)10/(double)7)*M);
     producto *HP = malloc(sizeof(producto)*largeProduct);
+    CANT_PRODUCTO = largeProduct;
 
     for (i = 0; i < largeProduct; i++){
         HP[i].cod_producto=VACIA;
     }
 
-    CANT_PRODUCTO = largeProduct;
 
     for(i=0;i<M;i++){
         fread(&inProducto, sizeof(producto), 1, product);
@@ -135,11 +135,11 @@ oferta *hashInitOferta(){
 
 int hashInsertOferta(oferta HT[], int k, int cant_desc, int desc) {
     int i;
-    int pos = h(k,0);
+    int pos = h(k,0,1)%CANT_OFERTA;
     int inicio = pos;
 
     for(i=1;HT[pos].cod_producto != VACIA && HT[pos].cod_producto != k;i++){
-        pos = (inicio + h(k, i)) % CANT_OFERTA;
+        pos = (inicio + h2(k, i,1)) % CANT_OFERTA;
     }
 
     if(HT[pos].cod_producto==k){
@@ -154,11 +154,11 @@ int hashInsertOferta(oferta HT[], int k, int cant_desc, int desc) {
 
 int hashInsertProducto(producto HT[], int k, char nombre[31], int pre) {
     int i;
-    int pos = h(k,0);
+    int pos = h(k,0,0)%CANT_PRODUCTO;
     int inicio = pos;
 
     for (i = 1; HT[pos].cod_producto != VACIA && HT[pos].cod_producto != k; i++){
-        pos = (inicio + h(k, i)) % CANT_PRODUCTO;
+        pos = (inicio + h2(k, i,0)) % CANT_PRODUCTO;
     }
 
     if (HT[pos].cod_producto == k){
@@ -173,7 +173,7 @@ int hashInsertProducto(producto HT[], int k, char nombre[31], int pre) {
 
 producto searchProducto(producto HP[],int k){
     int inicio, i;
-    int pos = h(k,0)%CANT_PRODUCTO;
+    int pos = h(k,0,0)%CANT_PRODUCTO;
     inicio=pos;
 
     producto output;
@@ -181,7 +181,7 @@ producto searchProducto(producto HP[],int k){
     output.precio = 0;
 
     for (i = 1; HP[pos].cod_producto != VACIA && HP[pos].cod_producto != k; i++){
-        pos = (inicio + h(k, i)) % CANT_PRODUCTO;
+        pos = (inicio + h2(k, i,0)) % CANT_PRODUCTO;
         if(i==2*CANT_PRODUCTO)
             break;
     }
@@ -195,7 +195,7 @@ producto searchProducto(producto HP[],int k){
 
 oferta searchOferta(oferta HP[],int k){
     int inicio, i;
-    int pos = h(k,0)%CANT_OFERTA;
+    int pos = h(k,0,1)%CANT_OFERTA;
     inicio=pos;
 
     oferta output;
@@ -204,7 +204,7 @@ oferta searchOferta(oferta HP[],int k){
     output.descuento = 0;
 
     for (i = 1; HP[pos].cod_producto != VACIA && HP[pos].cod_producto != k; i++){
-        pos = (inicio + h(k, i)) % CANT_OFERTA;
+        pos = (inicio + h2(k, i,1)) % CANT_OFERTA;
         if(i==2*CANT_OFERTA)
             break;
     }
@@ -240,13 +240,13 @@ void hashDisplayProducto(producto HT[]){
 
 int main(){
     int i,j;
-    char buffer[100];
+    char buffer[1000];
 
     oferta *inputOfertas = hashInitOferta();
     producto *inputProductos = hashInitProducto();
-
+     
     hashDisplayOferta(inputOfertas);
-    hashDisplayProducto(inputProductos);
+    //hashDisplayProducto(inputProductos);
 
     FILE *input;
     input = fopen("compras.txt","r");
@@ -256,16 +256,15 @@ int main(){
     int cantCompras = atoi(buffer);
     printf("%s\n",buffer);
 
-
     for(i=0;i<cantCompras;i++){
 
         int total = 0;
-        fgets(buffer,100,input);
+        fgets(buffer,1000,input);
         strtok(buffer, "\n");
         int compras = atoi(buffer);
 
         for(j=0;j<compras;j++){
-            fgets(buffer,100,input);
+            fgets(buffer,1000,input);
             strtok(buffer,"\n");
             int id = atoi(buffer);
             insert(id);          
@@ -278,8 +277,8 @@ int main(){
                 if(actualOferta.cod_producto==VACIA){
                     total = total + cabeza->cantidad*actualProducto.precio;
                 }else{
-                    total = total + ((cabeza->cantidad)/(actualOferta.cantidad_descuento))*(actualProducto.precio - actualOferta.descuento) + ((cabeza->cantidad)%(actualOferta.cantidad_descuento))*(actualProducto.precio);
-                }
+                    total = total + (cabeza->cantidad%(actualOferta.cantidad_descuento))*actualProducto.precio + (cabeza->cantidad - cabeza->cantidad%actualOferta.cantidad_descuento)*(actualProducto.precio-actualOferta.descuento);
+                }                
             }
             cabeza=cabeza->sig;
         }
@@ -293,4 +292,5 @@ int main(){
     free(inputProductos);
     fclose(input);
     
+    return 0;
 }
