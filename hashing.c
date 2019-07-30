@@ -88,7 +88,7 @@ producto *hashInitProducto(){
     product = fopen("productos.dat", "r");
 
     fread(&M, sizeof(int),1,product);
-    
+    printf("%d",M);
     int  largeProduct = (int) floor( ((double)10/(double)7)*M);
     producto *HP = malloc(sizeof(producto)*largeProduct);
     CANT_PRODUCTO = largeProduct;
@@ -177,6 +177,7 @@ producto searchProducto(producto HP[],int k){
     inicio=pos;
 
     producto output;
+    strcpy(output.nbre_producto,"NADA");
     output.cod_producto=VACIA;
     output.precio = 0;
 
@@ -231,7 +232,7 @@ void hashDisplayProducto(producto HT[]){
    int i = 0;
    for(i = 0; i<CANT_PRODUCTO; i++) {
       if(HT[i].cod_producto != VACIA)
-         printf(" (%d,%s)",HT[i].cod_producto,HT[i].nbre_producto);
+         printf(" (%d,%s,%d)",HT[i].cod_producto,HT[i].nbre_producto,HT[i].precio);
       else
          printf(" ~~ ");
    }
@@ -246,7 +247,7 @@ int main(){
     producto *inputProductos = hashInitProducto();
      
     hashDisplayOferta(inputOfertas);
-    //hashDisplayProducto(inputProductos);
+    hashDisplayProducto(inputProductos);
 
     FILE *input;
     input = fopen("compras.txt","r");
