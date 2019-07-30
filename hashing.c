@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <time.h>
 #include <math.h>
 
 /*--------------------------------- */
@@ -57,6 +56,8 @@ void deleteList(){
 int CANT_OFERTA;
 int CANT_PRODUCTO;
 
+/*----------------------------------*/
+
 typedef struct {
     int cod_producto;
     char nbre_producto[31];
@@ -74,7 +75,9 @@ int h2(int k, int i, int pos){
 }
 
 int h(int k, int i,int pos){
-    return k;
+    if(pos == 1)
+        return k%CANT_OFERTA;
+    return k%CANT_PRODUCTO;
 }
 
 int hashInsertOferta(oferta HT[], int k, int cant_desc, int desc);
@@ -90,7 +93,6 @@ producto *hashInitProducto(){
     fread(&M, sizeof(int),1,product);
     int  largeProduct = (int) floor( ((double)10/(double)7)*M);
     producto *HP = malloc(sizeof(producto)*largeProduct);
-    printf("Productos %d:",M);
     CANT_PRODUCTO = largeProduct;
 
     for (i = 0; i < largeProduct; i++){
@@ -118,7 +120,6 @@ oferta *hashInitOferta(){
 
     int  largeOfert = (int) floor( ((double)10/(double)7)*M);
     CANT_OFERTA = largeOfert;
-    printf("Ofertas %d:",M);
     oferta *HO = malloc(sizeof(oferta)*largeOfert);
 
     for (i = 0; i < largeOfert; i++){
@@ -242,21 +243,20 @@ void hashDisplayProducto(producto HT[]){
 
 int main(){
     int i,j;
-    char buffer[1000];
+    char buffer[1000],buffer_aux[1000];
 
     oferta *inputOfertas = hashInitOferta(); 
-    hashDisplayOferta(inputOfertas);
     producto *inputProductos = hashInitProducto();
-    hashDisplayProducto(inputProductos);
-    printf("\n\n");
 
-    FILE *input;
+    FILE *input,*output;
     input = fopen("compras.txt","r");
+    output = fopen("boletas.txt","w");
 
     fgets(buffer,100,input);
     strtok(buffer, "\n");
     int cantCompras = atoi(buffer);
-    printf("%s\n",buffer);
+    sprintf(buffer_aux,"%d\n",cantCompras);
+    fputs(buffer_aux,output);
 
     for(i=0;i<cantCompras;i++){
 
@@ -277,26 +277,23 @@ int main(){
             oferta actualOferta = searchOferta(inputOfertas,cabeza->numero);
             
             if(actualProducto.cod_producto!=VACIA){
-                //printf("Codigo: %d. Precio: %d. Cantidad: %d ",actualProducto.cod_producto,actualProducto.precio,cabeza->cantidad);
                 if(actualOferta.cod_producto==VACIA){
-                    //printf("\n");
                     total = total + cabeza->cantidad*actualProducto.precio;
                 }else{
-                    //printf("Descuento: %d. Cantidad descuento: %d\n",actualOferta.descuento,actualOferta.cantidad_descuento);
                     total = total + (cabeza->cantidad%(actualOferta.cantidad_descuento))*actualProducto.precio + (cabeza->cantidad - cabeza->cantidad%actualOferta.cantidad_descuento)*(actualProducto.precio-actualOferta.descuento);
                 }                
             }
             cabeza=cabeza->sig;
         }
         
-        printf("%d\n",total);
+        sprintf(buffer_aux,"%d\n",total);
+        fputs(buffer_aux,output);
         deleteList();
     }
-
     
     free(inputOfertas);
     free(inputProductos);
     fclose(input);
-    
+    fclose(output);
     return 0;
 }
