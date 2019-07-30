@@ -88,9 +88,9 @@ producto *hashInitProducto(){
     product = fopen("productos.dat", "r");
 
     fread(&M, sizeof(int),1,product);
-    printf("%d",M);
     int  largeProduct = (int) floor( ((double)10/(double)7)*M);
     producto *HP = malloc(sizeof(producto)*largeProduct);
+    printf("Productos %d:",M);
     CANT_PRODUCTO = largeProduct;
 
     for (i = 0; i < largeProduct; i++){
@@ -118,6 +118,7 @@ oferta *hashInitOferta(){
 
     int  largeOfert = (int) floor( ((double)10/(double)7)*M);
     CANT_OFERTA = largeOfert;
+    printf("Ofertas %d:",M);
     oferta *HO = malloc(sizeof(oferta)*largeOfert);
 
     for (i = 0; i < largeOfert; i++){
@@ -183,7 +184,7 @@ producto searchProducto(producto HP[],int k){
 
     for (i = 1; HP[pos].cod_producto != VACIA && HP[pos].cod_producto != k; i++){
         pos = (inicio + h2(k, i,0)) % CANT_PRODUCTO;
-        if(i==2*CANT_PRODUCTO)
+        if(i==4*CANT_PRODUCTO)
             break;
     }
     
@@ -243,11 +244,11 @@ int main(){
     int i,j;
     char buffer[1000];
 
-    oferta *inputOfertas = hashInitOferta();
-    producto *inputProductos = hashInitProducto();
-     
+    oferta *inputOfertas = hashInitOferta(); 
     hashDisplayOferta(inputOfertas);
+    producto *inputProductos = hashInitProducto();
     hashDisplayProducto(inputProductos);
+    printf("\n\n");
 
     FILE *input;
     input = fopen("compras.txt","r");
@@ -274,10 +275,14 @@ int main(){
         while(cabeza!=NULL){
             producto actualProducto = searchProducto(inputProductos,cabeza->numero);
             oferta actualOferta = searchOferta(inputOfertas,cabeza->numero);
+            
             if(actualProducto.cod_producto!=VACIA){
+                //printf("Codigo: %d. Precio: %d. Cantidad: %d ",actualProducto.cod_producto,actualProducto.precio,cabeza->cantidad);
                 if(actualOferta.cod_producto==VACIA){
+                    //printf("\n");
                     total = total + cabeza->cantidad*actualProducto.precio;
                 }else{
+                    //printf("Descuento: %d. Cantidad descuento: %d\n",actualOferta.descuento,actualOferta.cantidad_descuento);
                     total = total + (cabeza->cantidad%(actualOferta.cantidad_descuento))*actualProducto.precio + (cabeza->cantidad - cabeza->cantidad%actualOferta.cantidad_descuento)*(actualProducto.precio-actualOferta.descuento);
                 }                
             }
