@@ -70,14 +70,12 @@ typedef struct {
     int descuento;
 }oferta;
 
-int h2(int k, int i, int pos){
-    return i*(7-k%7);
+int h2(int k, int pos){
+    return 7-k%7;
 }
 
 int h(int k, int i,int pos){
-    if(pos == 1)
-        return k%CANT_OFERTA;
-    return k%CANT_PRODUCTO;
+    return k;
 }
 
 int hashInsertOferta(oferta HT[], int k, int cant_desc, int desc);
@@ -121,7 +119,6 @@ oferta *hashInitOferta(){
     int  largeOfert = (int) floor( ((double)10/(double)7)*M);
     CANT_OFERTA = largeOfert;
     oferta *HO = malloc(sizeof(oferta)*largeOfert);
-
     for (i = 0; i < largeOfert; i++){
         HO[i].cod_producto=VACIA;
     }
@@ -141,7 +138,7 @@ int hashInsertOferta(oferta HT[], int k, int cant_desc, int desc) {
     int inicio = pos;
 
     for(i=1;HT[pos].cod_producto != VACIA && HT[pos].cod_producto != k;i++){
-        pos = (inicio + h2(k, i,1)) % CANT_OFERTA;
+        pos = (inicio + i*h2(k, 1)) % CANT_OFERTA;
     }
 
     if(HT[pos].cod_producto==k){
@@ -160,7 +157,7 @@ int hashInsertProducto(producto HT[], int k, char nombre[31], int pre) {
     int inicio = pos;
 
     for (i = 1; HT[pos].cod_producto != VACIA && HT[pos].cod_producto != k; i++){
-        pos = (inicio + h2(k, i,0)) % CANT_PRODUCTO;
+        pos = (inicio + i*h2(k,0)) % CANT_PRODUCTO;
     }
 
     if (HT[pos].cod_producto == k){
@@ -184,7 +181,7 @@ producto searchProducto(producto HP[],int k){
     output.precio = 0;
 
     for (i = 1; HP[pos].cod_producto != VACIA && HP[pos].cod_producto != k; i++){
-        pos = (inicio + h2(k, i,0)) % CANT_PRODUCTO;
+        pos = (inicio + i*h2(k, 0)) % CANT_PRODUCTO;
         if(i==4*CANT_PRODUCTO)
             break;
     }
@@ -207,7 +204,7 @@ oferta searchOferta(oferta HP[],int k){
     output.descuento = 0;
 
     for (i = 1; HP[pos].cod_producto != VACIA && HP[pos].cod_producto != k; i++){
-        pos = (inicio + h2(k, i,1)) % CANT_OFERTA;
+        pos = (inicio + i*h2(k,1)) % CANT_OFERTA;
         if(i==2*CANT_OFERTA)
             break;
     }
@@ -247,6 +244,7 @@ int main(){
 
     oferta *inputOfertas = hashInitOferta(); 
     producto *inputProductos = hashInitProducto();
+    hashDisplayProducto(inputProductos);
 
     FILE *input,*output;
     input = fopen("compras.txt","r");
