@@ -18,14 +18,15 @@ struct nodo* find(int numero);
 
 //Inserta en lista. En caso de que el numero ya se encuentre, le suma 1 a int cantidad.
 void insert(int numero){
-	if(find(numero)==NULL){	
+    struct nodo *aux = find(numero);
+	if(aux==NULL){	
 		struct nodo *aux = (struct nodo*) malloc(sizeof(struct nodo));
    	    aux->numero = numero;
    	    aux->cantidad = 1;
    	    aux->sig = cabeza;
    	    cabeza = aux;
 	}else{
-		find(numero)->cantidad++;
+		aux->cantidad++;
 	}
 }
 
@@ -345,8 +346,8 @@ int main(){
     //Inicializa cada tabla de hashing
     oferta *inputOfertas = hashInitOferta(); 
     producto *inputProductos = hashInitProducto();
+    //hashDisplayOferta(inputOfertas);
     hashDisplayProducto(inputProductos);
-    hashDisplayOferta(inputOfertas);
 
     //Abre archivos
     FILE *input,*output;
@@ -379,9 +380,9 @@ int main(){
         //Recorre la lista, calculando el total dependiendo de la cantidad de productos y las ofertas.
         while(cabeza!=NULL){
             producto actualProducto = searchProducto(inputProductos,cabeza->numero);
-            oferta actualOferta = searchOferta(inputOfertas,cabeza->numero);
-            printf("numero %d, cantidad %d\n",cabeza->numero,cabeza->cantidad);
+            //printf("numero %d, cantidad %d\n",cabeza->numero,cabeza->cantidad);
             if(actualProducto.cod_producto!=VACIA){
+                oferta actualOferta = searchOferta(inputOfertas,cabeza->numero);
                 if(actualOferta.cod_producto==VACIA){
                     total = total + cabeza->cantidad*actualProducto.precio;
                 }else{
