@@ -75,13 +75,8 @@ typedef struct {
     int descuento;
 }oferta;
 
-//Segunda funcion de hashing
-int h2(int k){
-	return 7-k%7;
-}
-
 int p(int k, int i,int pos){
-    return i*h2(k);
+    return i*(7-k%7);
 }
 
 //Primera funcion de hashing
@@ -346,6 +341,7 @@ void hashDisplayProducto(producto HT[]){
 }
 
 int main(){
+    //Variables utilizadas
     int i,j;
     char buffer[1000],buffer_aux[1000];
 
@@ -392,7 +388,7 @@ int main(){
                 if(actualOferta.cod_producto==VACIA){
                     total = total + cabeza->cantidad*actualProducto.precio;
                 }else{
-                    total = total + (cabeza->cantidad)*(actualProducto.precio-actualOferta.descuento) - (cabeza->cantidad/actualOferta.cantidad_descuento)*actualOferta.descuento;
+                    total = total + cabeza->cantidad*actualProducto.precio - (cabeza->cantidad/actualOferta.cantidad_descuento)*actualOferta.descuento;
                 }                
             }
             cabeza=cabeza->sig;
