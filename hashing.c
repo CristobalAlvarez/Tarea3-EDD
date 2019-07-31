@@ -75,10 +75,16 @@ typedef struct {
     int descuento;
 }oferta;
 
-int h2(int k, int pos){
-    return 7-k%7;
+//Segunda funcion de hashing
+int h2(int k){
+	return 7-k%7;
 }
 
+int p(int k, int i,int pos){
+    return i*h2(k);
+}
+
+//Primera funcion de hashing
 int h(int k, int i,int pos){
     return k;
 }
@@ -180,7 +186,7 @@ int hashInsertOferta(oferta HT[], int k, int cant_desc, int desc) {
     int inicio = pos;
 
     for(i=1;HT[pos].cod_producto != VACIA && HT[pos].cod_producto != k;i++){
-        pos = (inicio + i*h2(k, 1)) % CANT_OFERTA;
+        pos = (inicio + p(k, i,1)) % CANT_OFERTA;
     }
 
     if(HT[pos].cod_producto==k){
@@ -214,7 +220,7 @@ int hashInsertProducto(producto HT[], int k, char nombre[31], int pre) {
     int inicio = pos;
 
     for (i = 1; HT[pos].cod_producto != VACIA && HT[pos].cod_producto != k; i++){
-        pos = (inicio + i*h2(k,0)) % CANT_PRODUCTO;
+        pos = (inicio + p(k,i,0)) % CANT_PRODUCTO;
     }
 
     if (HT[pos].cod_producto == k){
@@ -251,7 +257,7 @@ producto searchProducto(producto HP[],int k){
     output.precio = 0;
 
     for (i = 1; HP[pos].cod_producto != VACIA && HP[pos].cod_producto != k; i++){
-        pos = (inicio + i*h2(k, 0)) % CANT_PRODUCTO;
+        pos = (inicio + p(k, i,0)) % CANT_PRODUCTO;
     }
     
     if (HP[pos].cod_producto == k){
@@ -285,7 +291,7 @@ oferta searchOferta(oferta HP[],int k){
     output.descuento = 0;
 
     for (i = 1; HP[pos].cod_producto != VACIA && HP[pos].cod_producto != k; i++){
-        pos = (inicio + i*h2(k,1)) % CANT_OFERTA;
+        pos = (inicio + p(k,i,1)) % CANT_OFERTA;
     }
     
     if(HP[pos].cod_producto == k){
@@ -386,7 +392,7 @@ int main(){
                 if(actualOferta.cod_producto==VACIA){
                     total = total + cabeza->cantidad*actualProducto.precio;
                 }else{
-                    total = total + (cabeza->cantidad%(actualOferta.cantidad_descuento))*actualProducto.precio + (cabeza->cantidad - cabeza->cantidad%actualOferta.cantidad_descuento)*(actualProducto.precio-actualOferta.descuento);
+                    total = total + (cabeza->cantidad)*(actualProducto.precio-actualOferta.descuento) - (cabeza->cantidad/actualOferta.cantidad_descuento)*actualOferta.descuento;
                 }                
             }
             cabeza=cabeza->sig;
