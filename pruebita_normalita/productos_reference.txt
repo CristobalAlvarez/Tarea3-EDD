@@ -1,0 +1,101 @@
+Cantidad de structs: 20
+
+[Struct 1]
+  cod_producto: 1
+  nbre_producto: Manzana
+  precio: 200
+
+[Struct 2]
+  cod_producto: 2
+  nbre_producto: Pera
+  precio: 150
+
+[Struct 3]
+  cod_producto: 3
+  nbre_producto: Jabon
+  precio: 300
+
+[Struct 4]
+  cod_producto: 4
+  nbre_producto: Bebida
+  precio: 800
+
+[Struct 5]
+  cod_producto: 5
+  nbre_producto: Pan
+  precio: 80
+
+[Struct 6]
+  cod_producto: 6
+  nbre_producto: Atun
+  precio: 1200
+
+[Struct 7]
+  cod_producto: 7
+  nbre_producto: Carne
+  precio: 3400
+
+[Struct 8]
+  cod_producto: 8
+  nbre_producto: Huevo
+  precio: 200
+
+[Struct 9]
+  cod_producto: 9
+  nbre_producto: Sardinas
+  precio: 2000
+
+[Struct 10]
+  cod_producto: 10
+  nbre_producto: Leche
+  precio: 1650
+
+[Struct 11]
+  cod_producto: 11
+  nbre_producto: Bacalao
+  precio: 90
+
+[Struct 12]
+  cod_producto: 12
+  nbre_producto: Ostras
+  precio: 100
+
+[Struct 13]
+  cod_producto: 13
+  nbre_producto: Chocolate
+  precio: 760
+
+[Struct 14]
+  cod_producto: 14
+  nbre_producto: Trencito
+  precio: 900
+
+[Struct 15]
+  cod_producto: 15
+  nbre_producto: Monster
+  precio: 457
+
+[Struct 16]
+  cod_producto: 16
+  nbre_producto: Score
+  precio: 892
+
+[Struct 17]
+  cod_producto: 17
+  nbre_producto: Te
+  precio: 1200
+
+[Struct 18]
+  cod_producto: 18
+  nbre_producto: Vino
+  precio: 3000
+
+[Struct 19]
+  cod_producto: 19
+  nbre_producto: Cerveza
+  precio: 2000
+
+[Struct 20]
+  cod_producto: 20
+  nbre_producto: Carne
+  precio: 5
