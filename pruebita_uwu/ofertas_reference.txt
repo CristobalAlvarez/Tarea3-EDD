@@ -16,11 +16,11 @@ Cantidad de structs: 5
   descuento: 200
 
 [Struct 4]
-  cod_producto: 20
-  cantidad_descuento: 0
+  cod_producto: 2
+  cantidad_descuento: 2
   descuento: 100
 
 [Struct 5]
   cod_producto: 15
-  cantidad_descuento: 0
+  cantidad_descuento: 3
   descuento: 200

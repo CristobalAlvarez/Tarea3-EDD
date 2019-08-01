@@ -75,12 +75,15 @@ typedef struct {
     int descuento;
 }oferta;
 
+//Segunda funcion de hashing
 int p(int k, int i,int pos){
     return i*(7-k%7);
 }
 
 //Primera funcion de hashing
 int h(int k, int i,int pos){
+    if((floor(log10(abs(k))) + 1)>=6)//Habia un error con claves muy grandes, con esto se corrige.
+        return 2*k;
     return k;
 }
 
@@ -101,25 +104,24 @@ int hashInsertProducto(producto HT[], int k, char nombre[31], int pre);
 producto *hashInitProducto(){
     int i,M;
     producto inProducto;
-
+    //Abre archivo
     FILE *product;
     product = fopen("productos.dat", "r");
-
+    //Lee primer numero, calcula nuevo largo para tener carga 0.7 y hace malloc
     fread(&M, sizeof(int),1,product);
     int  largeProduct = (int) floor( ((double)10/(double)7)*M);
     producto *HP = malloc(sizeof(producto)*largeProduct);
     CANT_PRODUCTO = largeProduct;
-
+    //Recorre hashing table y los vuelve VACIA
     for (i = 0; i < largeProduct; i++){
         HP[i].cod_producto=VACIA;
     }
-
-
+    //Lee todos los structs
     for(i=0;i<M;i++){
         fread(&inProducto, sizeof(producto), 1, product);
         hashInsertProducto(HP, inProducto.cod_producto, inProducto.nbre_producto, inProducto.precio);
     }
-
+    //Cierra archivo y retorna
     fclose(product);
     return HP;
 }
@@ -138,24 +140,24 @@ producto *hashInitProducto(){
 oferta *hashInitOferta(){
     int i,M;
     oferta inOferta;
-
+    //Abre archivo
     FILE *ofert;
     ofert = fopen("ofertas.dat", "r");
-
+    //Lee primer numero, calcula nuevo largo para tener carga 0.7 y hace malloc
     fread(&M, sizeof(int),1,ofert);
-
     int  largeOfert = (int) floor( ((double)10/(double)7)*M);
     CANT_OFERTA = largeOfert;
     oferta *HO = malloc(sizeof(oferta)*largeOfert);
+    //Recorre hashing table y los vuelve VACIA
     for (i = 0; i < largeOfert; i++){
         HO[i].cod_producto=VACIA;
     }
-
+    //Lee todos los structs
     for(i=0;i<M;i++){
         fread(&inOferta, sizeof(oferta), 1, ofert);
         hashInsertOferta(HO,inOferta.cod_producto, inOferta.cantidad_descuento, inOferta.descuento);
     }
-
+    //Cierra archivo y retorna
     fclose(ofert);
     return HO;
 }
@@ -348,9 +350,7 @@ int main(){
     //Inicializa cada tabla de hashing
     oferta *inputOfertas = hashInitOferta(); 
     producto *inputProductos = hashInitProducto();
-    //hashDisplayOferta(inputOfertas);
-    hashDisplayProducto(inputProductos);
-
+    
     //Abre archivos
     FILE *input,*output;
     input = fopen("compras.txt","r");
@@ -385,10 +385,10 @@ int main(){
             //printf("numero %d, cantidad %d\n",cabeza->numero,cabeza->cantidad);
             if(actualProducto.cod_producto!=VACIA){
                 oferta actualOferta = searchOferta(inputOfertas,cabeza->numero);
-                if(actualOferta.cod_producto==VACIA){
-                    total = total + cabeza->cantidad*actualProducto.precio;
+                if(actualOferta.cod_producto!=VACIA && actualOferta.cod_producto == cabeza->numero){
+                    total = total + (cabeza->cantidad)*(actualProducto.precio) - ((cabeza->cantidad)/(actualOferta.cantidad_descuento))*actualOferta.descuento;
                 }else{
-                    total = total + cabeza->cantidad*actualProducto.precio - (cabeza->cantidad/actualOferta.cantidad_descuento)*actualOferta.descuento;
+                    total = total + cabeza->cantidad*actualProducto.precio;
                 }                
             }
             cabeza=cabeza->sig;
